@@ -21,7 +21,7 @@ void main(void)
   @#
   U8 trigger = 0;
   PORTB |= _BV(PB4) | _BV(PB5) | _BV(PB6);
-  _delay_us(1); // see HID file
+  _delay_us(1); // TODO: see HID file
   @#
   @<Setup USB Controller@>@;
   sei();
@@ -300,12 +300,12 @@ struct {
   18, @/
   1, /* DEVICE */
   0x0200, /* 2.0 */
-  0x00, /* ??? (HID\S5.1) */
-  0x00, /* ??? (HID\S5.1) */
+  0x00, @/
+  0x00, /* constant */
   0x00, /* constant */
   EP0_SIZE, @/
   0x03EB, @/
-  0x2015, /* PID (HID keyboard) */
+  0x2015, @/
   0x0100, /* 1.0 */
   0, /* no string */
   0, /* no string */
@@ -340,11 +340,11 @@ struct {
 SIZEOF_THIS, @/ 
 2, /* CONFIGURATION */
 SIZEOF_CONF_DESC, @/
-1, /* Communication (master) interface + Data (slave) interface(s) */
+1, @/
 CONF_NUM, @/
 0, @/
 1 << 7, @/
-50 /* 100 mA */
+250 /* 500 mA */
 
 @*2 Interface descriptor.
 
@@ -358,14 +358,14 @@ SIZEOF_THIS, @/
 CTRL_IFACE_NUM, @/
 0, /* no alternate settings */
 1, /* one endpoint */
-0x03, /* HID class */
-0x00, /* non-bootable */
+0x03, @/
+0x00, @/
 0x00, /* no protocol */
 0 /* no string */
 
-@*3 HID.
+@*3 HID descriptor.
 
-@<Initialize HID...@>=
+@<Initialize HID descriptor@>=
 SIZEOF_THIS,
 0x21, /* HID */
 0x0111, /* HID 1.11 */
