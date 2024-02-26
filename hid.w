@@ -1,5 +1,6 @@
+% TODO: make comments to values of all descriptors match HID spec
+
 \datethis
-\input epsf
 
 \font\caps=cmcsc10 at 9pt
 
@@ -19,7 +20,6 @@ void main(void)
   @<Read all data@>@;
   PORTD |= _BV(PD5);
   @#
-  U8 trigger = 0;
   PORTB |= _BV(PB4) | _BV(PB5) | _BV(PB6);
   _delay_us(1); // TODO: see HID file
   @#
@@ -33,21 +33,18 @@ void main(void)
     if (UEINTX & _BV(RXSTPI))
       @<Process CONTROL packet@>@;
     UENUM = 1;
-    if (UEINTX & _BV(TXINI))
+    if (*datap && (UEINTX & _BV(TXINI)))
       @<Process IN packet@>@;
-    if (!trigger && (PORTB & _BV(PB4))) {
+    if (PORTB & _BV(PB4)) {
       _delay_ms(1000);
-      trigger = 1;
       datap = data1;
     }
-    if (!trigger && (PORTB & _BV(PB5))) {
+    if (PORTB & _BV(PB5)) {
       _delay_ms(1000);
-      trigger = 1;
       datap = data2;
     }
-    if (!trigger && (PORTB & _BV(PB6))) {
+    if (PORTB & _BV(PB6)) {
       _delay_ms(1000);
-      trigger = 1;
       datap = data3;
     }
   }
@@ -58,38 +55,30 @@ typedef unsigned char U8;
 typedef unsigned short U16;
 
 @ @<Process IN packet@>= {
-  if (trigger) {
-    UEINTX &= ~_BV(TXINI);
-    UEDATX = 0;
-    UEDATX = 0;
-    UEDATX = 0x04; // *datap
-    UEDATX = 0;
-    UEDATX = 0;
-    UEDATX = 0;
-    UEDATX = 0;
-    UEDATX = 0;
-    UEINTX &= ~_BV(FIFOCON);
-    @#
-    while (!(UEINTX & _BV(TXINI))) { }
-    UEINTX &= ~_BV(TXINI);
-    UEDATX = 0;
-    UEDATX = 0;
-    UEDATX = 0;
-    UEDATX = 0;
-    UEDATX = 0;
-    UEDATX = 0;
-    UEDATX = 0;
-    UEDATX = 0;
-    UEINTX &= ~_BV(FIFOCON);
-    @#
-    UDR1 = *datap; while (!(UCSR1A & _BV(UDRE1))) { }
-    datap++;
-    if (*datap == 0) {
-      trigger = 0;
-      UDR1 = '\r'; while (!(UCSR1A & _BV(UDRE1))) { }
-      UDR1 = '\n'; while (!(UCSR1A & _BV(UDRE1))) { }
-    }
-  }
+  UEINTX &= ~_BV(TXINI);
+  UEDATX = 0;
+  UEDATX = 0;
+  UEDATX = 0x04; // *datap
+  UEDATX = 0;
+  UEDATX = 0;
+  UEDATX = 0;
+  UEDATX = 0;
+  UEDATX = 0;
+  UEINTX &= ~_BV(FIFOCON);
+  @#
+  while (!(UEINTX & _BV(TXINI))) { }
+  UEINTX &= ~_BV(TXINI);
+  UEDATX = 0;
+  UEDATX = 0;
+  UEDATX = 0;
+  UEDATX = 0;
+  UEDATX = 0;
+  UEDATX = 0;
+  UEDATX = 0;
+  UEDATX = 0;
+  UEINTX &= ~_BV(FIFOCON);
+  @#
+  datap++;
 }
 
 @ @<Global...@>=
@@ -125,12 +114,7 @@ datap = data3;
 while (1) {
   while (!(UCSR1A & _BV(RXC1))) { }
   d = UDR1;
-  if (d == '\n') {
-    UDR1 = '\r'; while (!(UCSR1A & _BV(UDRE1))) { }
-    UDR1 = '\n'; while (!(UCSR1A & _BV(UDRE1))) { }
-    break;
-  }
-  UDR1 = d; while (!(UCSR1A & _BV(UDRE1))) { }
+  if (d == '\n') break;
   *datap++ = d;
 }
 *datap = 0;

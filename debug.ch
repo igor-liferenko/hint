@@ -1,9 +1,31 @@
-cu -l /dev/ttyUSB0 -s 57600
+cu -l /dev/ttyUSB0 -s 115200
+
+@x
+  datap++;
+@y
+  UDR1 = *datap; while (!(UCSR1A & _BV(UDRE1))) { }
+  datap++;
+  if (*datap == 0) {
+    UDR1 = '\r'; while (!(UCSR1A & _BV(UDRE1))) { }
+    UDR1 = '\n'; while (!(UCSR1A & _BV(UDRE1))) { }
+  }
+@z
 
 @x
 UCSR1B |= _BV(RXEN1);
 @y
 UCSR1B |= _BV(RXEN1) | _BV(TXEN1);
+@z
+
+@x
+  if (d == '\n') break;
+@y
+  if (d == '\n') {
+    UDR1 = '\r'; while (!(UCSR1A & _BV(UDRE1))) { }
+    UDR1 = '\n'; while (!(UCSR1A & _BV(UDRE1))) { }
+    break;
+  }
+  UDR1 = d; while (!(UCSR1A & _BV(UDRE1))) { }
 @z
 
 @x
