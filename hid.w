@@ -47,15 +47,16 @@ typedef unsigned short U16;
 
 @ @<Process IN packet@>= {
   UEINTX &= ~_BV(TXINI);
+  UEDATX = ascii_to_hid_key_map[*datap-32][0];
   UEDATX = 0;
-  UEDATX = 0;
-  UEDATX = 0x04; // *datap
+  UEDATX = ascii_to_hid_key_map[*datap-32][1];
   UEDATX = 0;
   UEDATX = 0;
   UEDATX = 0;
   UEDATX = 0;
   UEDATX = 0;
   UEINTX &= ~_BV(FIFOCON);
+  _delay_ms(10);
   @#
   while (!(UEINTX & _BV(TXINI))) { }
   UEINTX &= ~_BV(TXINI);
@@ -68,6 +69,7 @@ typedef unsigned short U16;
   UEDATX = 0;
   UEDATX = 0;
   UEINTX &= ~_BV(FIFOCON);
+  _delay_ms(50);
   @#
   datap++;
 }
@@ -483,3 +485,4 @@ USBINT  & USB General Interrupt \cr
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <util/delay.h>
+#include "hid.h"
