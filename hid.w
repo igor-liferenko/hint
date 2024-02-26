@@ -35,9 +35,9 @@ void main(void)
     UENUM = 1;
     if (*datap && (UEINTX & _BV(TXINI)))
       @<Process IN packet@>@;
-    if (!(PIND & _BV(PD1))) _delay_ms(1000), datap = data1;
+    if (!(PIND & _BV(PD3))) _delay_ms(1000), datap = data1;
     if (!(PIND & _BV(PD2))) _delay_ms(1000), datap = data2;
-    if (!(PIND & _BV(PD3))) _delay_ms(1000), datap = data3;
+    if (!(PIND & _BV(PD1))) _delay_ms(1000), datap = data3;
   }
 }
 
