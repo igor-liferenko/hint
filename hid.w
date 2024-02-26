@@ -21,7 +21,7 @@ void main(void)
   PORTD |= _BV(PD5);
   @#
   PORTB |= _BV(PB4) | _BV(PB5) | _BV(PB6);
-  _delay_us(1); // TODO: see HID file
+  _delay_us(1);
   @#
   @<Setup USB Controller@>@;
   sei();
@@ -35,9 +35,9 @@ void main(void)
     UENUM = 1;
     if (*datap && (UEINTX & _BV(TXINI)))
       @<Process IN packet@>@;
-    if (PORTB & _BV(PB4)) _delay_ms(1000), datap = data1;
-    if (PORTB & _BV(PB5)) _delay_ms(1000), datap = data2;
-    if (PORTB & _BV(PB6)) _delay_ms(1000), datap = data3;
+    if (!(PINB & _BV(PB4))) _delay_ms(1000), datap = data1;
+    if (!(PINB & _BV(PB5))) _delay_ms(1000), datap = data2;
+    if (!(PINB & _BV(PB6))) _delay_ms(1000), datap = data3;
   }
 }
 
