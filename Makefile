@@ -1,7 +1,7 @@
 all:
 	@echo NoOp
 
-g:
+h:
 	ctangle hid debug
 	@make --no-print-directory hid
 
