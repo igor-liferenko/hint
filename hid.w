@@ -5,48 +5,46 @@
 
 \secpagedepth=2
 
-@* Program. Display time from USB using MAX7219 module.
-
-$$\epsfbox{max4.eps}$$
-
-$$\epsfbox{arduino.eps}$$
+@* Program.
 
 @c
 @<Header files@>@;
 @<Type definitions@>@;
-char data[500], *datap;
-U8 pressed, count, done;
-char c;
 @<Global variables@>@;
 @<Create ISR...@>@;
 
 void main(void)
 {
-  @<Initialize data@>@;
+  DDRD |= _BV(PD5);
+  @<Read data@>@;
+  PORTD |= _BV(PD5);
 
   @<Setup USB Controller@>@;
   sei();
   UDCON &= ~_BV(DETACH); /* attach after we enabled interrupts, because
     USB\_RESET arrives after attach */
 
-  datap = data;
   while (1) {
     UENUM = 0;
     if (UEINTX & _BV(RXSTPI))
       @<Process CONTROL packet@>@;
     UENUM = 1;
-    if ((UEINTX & _BV(TXINI)) && done)
+    if (UEINTX & _BV(TXINI))
       @<Process IN packet@>@;
-    if (!done && (UCSR1A & _BV(RXC1))) {
-      c = UDR1;
-      if (count != 3) {
-        if (c == '+') count++;
-        else count = 0;
-        continue;
-      }
-      UDR1 = c; while (!(UCSR1A & _BV(UDRE1))) { }
-      if (c == '\n') *datap = '\0', datap = data, PORTD |= _BV(PD5), done = 1;
-      else *(datap++) = c;
+    if (!trigger && (PORTB & _BV(PB4))) {
+      _delay_ms(1000);
+      trigger = 1;
+      datap = data1;
+    }
+    if (!trigger && (PORTB & _BV(PB5))) {
+      _delay_ms(1000);
+      trigger = 1;
+      datap = data2;
+    }
+    if (!trigger && (PORTB & _BV(PB6))) {
+      _delay_ms(1000);
+      trigger = 1;
+      datap = data3;
     }
   }
 }
@@ -56,28 +54,84 @@ typedef unsigned char U8;
 typedef unsigned short U16;
 
 @ @<Process IN packet@>= {
-if (*datap) {
-  UEINTX &= ~_BV(TXINI);
-  UEDATX = 0;
-  UEDATX = 0;
-  UEDATX = pressed ? 0 : 0x04; // datap
-  UEDATX = 0;
-  UEDATX = 0;
-  UEDATX = 0;
-  UEDATX = 0;
-  UEDATX = 0;
-  UEINTX &= ~_BV(FIFOCON);
-  pressed = !pressed;
-  if (!pressed) datap++;
-}
+  if (trigger) {
+    UEINTX &= ~_BV(TXINI);
+    UEDATX = 0;
+    UEDATX = 0;
+    UEDATX = 0x04; // *datap
+    UEDATX = 0;
+    UEDATX = 0;
+    UEDATX = 0;
+    UEDATX = 0;
+    UEDATX = 0;
+    UEINTX &= ~_BV(FIFOCON);
+    @#
+    while (!(UEINTX & _BV(TXINI))) { }
+    UEINTX &= ~_BV(TXINI);
+    UEDATX = 0;
+    UEDATX = 0;
+    UEDATX = 0;
+    UEDATX = 0;
+    UEDATX = 0;
+    UEDATX = 0;
+    UEDATX = 0;
+    UEDATX = 0;
+    UEINTX &= ~_BV(FIFOCON);
+    @#
+    UDR1 = *datap; while (!(UCSR1A & _BV(UDRE1))) { }
+    datap++;
+    if (*datap == 0) trigger = 0;
+  }
 }
 
-@ @<Initialize data@>=
-DDRD |= _BV(PD5);
+@ @<Global...@>=
+char data1[50], data2[50], data3[50], *datap;
 
-UBRR1 = 16; // table 18-12 in datasheet
+@ @<Read data@>=
+UBRR1 = 34; // table 18-12 in datasheet
 UCSR1A |= _BV(U2X1);
 UCSR1B |= _BV(RXEN1);
+@#
+while (1) {
+  while (!(UCSR1A & _BV(RXC1))) { }
+  c = UDR1;
+  if (c == '+') {
+    while (!(UCSR1A & _BV(RXC1))) { }
+    c = UDR1;
+    if (c == '+') {
+      while (!(UCSR1A & _BV(RXC1))) { } 
+      c = UDR1; 
+      if (c == '+') break;
+    }
+  }
+}
+@#
+datap = data1;
+while (1) {
+  while (!(UCSR1A & _BV(RXC1))) { }
+  c = UDR1;
+  if (c == '\n') break;
+  *datap++ = c;
+}
+*datap = 0;
+@#
+datap = data2;
+while (1) {
+  while (!(UCSR1A & _BV(RXC1))) { }
+  c = UDR1;
+  if (c == '\n') break;
+  *datap++ = c;
+}
+*datap = 0;
+@#
+datap = data3;
+while (1) {
+  while (!(UCSR1A & _BV(RXC1))) { }
+  c = UDR1;
+  if (c == '\n') break;
+  *datap++ = c;
+}
+*datap = 0;
 
 @* USB setup.
 
