@@ -2,11 +2,11 @@ all:
 	@echo NoOp
 
 g:
-	ctangle time debug
-	@make --no-print-directory time
+	ctangle hid debug
+	@make --no-print-directory hid
 
-time:
-	avr-gcc -mmcu=atmega32u4 -DF_CPU=16000000UL -g -Os -o fw.elf time.c
+hid:
+	avr-gcc -mmcu=atmega32u4 -DF_CPU=16000000UL -g -Os -o fw.elf hid.c
 	avr-objcopy -O ihex fw.elf fw.hex
 
 flash:

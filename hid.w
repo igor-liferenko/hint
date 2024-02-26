@@ -196,8 +196,8 @@ UEINTX &= ~_BV(RXOUTI);
 (void) UEDATX; @+ (void) UEDATX;
 wLength = UEDATX | UEDATX << 8;
 UEINTX &= ~_BV(RXSTPI);
-buf = &hid_desc;
-size = wLength > sizeof hid_desc ? sizeof hid_desc : wLength;
+buf = &hid_rprt_desc;
+size = wLength > sizeof hid_rprt_desc ? sizeof hid_rprt_desc : wLength;
 while (size) UEDATX = pgm_read_byte(buf++), size--;
 UEINTX &= ~_BV(TXINI);
 while (!(UEINTX & _BV(RXOUTI))) { }
@@ -260,6 +260,7 @@ struct {
 @*1 Configuration descriptor.
 
 @<Global variables@>=
+@<HID report descriptor@>@;
 struct {
   @<Configuration descriptor@>@;
   @<Interface descriptor@>@;
@@ -315,7 +316,7 @@ SIZEOF_THIS,
 0x00, /* no localization */
 0x01, /* one descriptor for this device */
 0x22, /* HID report (value for |bDescriptorType| in {\caps get descriptor hid}) */
-sizeof hid_desc
+sizeof hid_rprt_desc
 
 @*4 EP2 descriptor.
 
@@ -390,10 +391,10 @@ U8 bmAttributes;
 U16 wMaxPacketSize;
 U8 bInterval;
 
-@*1 HID descriptor.
+@*1 HID report descriptor.
 
-@<Type definitions@>=
-const U8 hid_desc[]
+@<HID report descriptor@>=
+const U8 hid_rprt_desc[]
 @t\hskip2.5pt@> @=PROGMEM@> = { @t\1@> @/
   0x05, 0x01, @t\hskip10pt@> // \.{USAGE\_PAGE (Generic Desktop)}
   0x09, 0x06, @t\hskip10pt@> // \.{USAGE (Keyboard)}
