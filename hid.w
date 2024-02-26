@@ -350,12 +350,10 @@ CONF_NUM, @/
 
 \S9.6.5 in USB spec; \S5.1.3 in CDC spec.
 
-@d CTRL_IFACE_NUM 0
-
 @<Initialize Interface descriptor@>=
 SIZEOF_THIS, @/
 4, /* INTERFACE */
-CTRL_IFACE_NUM, @/
+0, @/
 0, /* no alternate settings */
 1, /* one endpoint */
 0x03, @/
@@ -367,14 +365,14 @@ CTRL_IFACE_NUM, @/
 
 @<Initialize HID descriptor@>=
 SIZEOF_THIS,
-0x21, /* HID */
-0x0111, /* HID 1.11 */
-0x00, /* no localization */
-0x01, /* one descriptor for this device */
-0x22, /* HID report (value for |bDescriptorType| in {\caps get descriptor hid}) */
+0x21, @/
+0x0111, @/
+0x00, @/
+1, @/
+0x22, @/
 sizeof hid_rprt_desc
 
-@*4 EP2 descriptor.
+@*3 EP1 descriptor.
 
 \S9.6.6 in USB spec.
 
