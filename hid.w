@@ -20,7 +20,7 @@ void main(void)
   @<Read all data@>@;
   PORTD |= _BV(PD5);
   @#
-  PORTB |= _BV(PB4) | _BV(PB5) | _BV(PB6);
+  PORTD |= _BV(PD1) | _BV(PD2) | _BV(PD3);
   _delay_us(1);
   @#
   @<Setup USB Controller@>@;
@@ -35,9 +35,9 @@ void main(void)
     UENUM = 1;
     if (*datap && (UEINTX & _BV(TXINI)))
       @<Process IN packet@>@;
-    if (!(PINB & _BV(PB4))) _delay_ms(1000), datap = data1;
-    if (!(PINB & _BV(PB5))) _delay_ms(1000), datap = data2;
-    if (!(PINB & _BV(PB6))) _delay_ms(1000), datap = data3;
+    if (!(PIND & _BV(PD1))) _delay_ms(1000), datap = data1;
+    if (!(PIND & _BV(PD2))) _delay_ms(1000), datap = data2;
+    if (!(PIND & _BV(PD3))) _delay_ms(1000), datap = data3;
   }
 }
 
