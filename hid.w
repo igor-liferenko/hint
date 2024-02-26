@@ -16,14 +16,18 @@
 void main(void)
 {
   DDRD |= _BV(PD5);
-  @<Read data@>@;
+  @<Read all data@>@;
   PORTD |= _BV(PD5);
-
+  @#
+  U8 trigger = 0;
+  PORTB |= _BV(PB4) | _BV(PB5) | _BV(PB6);
+  _delay_us(1); // see HID file
+  @#
   @<Setup USB Controller@>@;
   sei();
   UDCON &= ~_BV(DETACH); /* attach after we enabled interrupts, because
     USB\_RESET arrives after attach */
-
+  @#
   while (1) {
     UENUM = 0;
     if (UEINTX & _BV(RXSTPI))
@@ -80,56 +84,54 @@ typedef unsigned short U16;
     @#
     UDR1 = *datap; while (!(UCSR1A & _BV(UDRE1))) { }
     datap++;
-    if (*datap == 0) trigger = 0;
+    if (*datap == 0) {
+      trigger = 0;
+      UDR1 = '\r'; while (!(UCSR1A & _BV(UDRE1))) { }
+      UDR1 = '\n'; while (!(UCSR1A & _BV(UDRE1))) { }
+    }
   }
 }
 
 @ @<Global...@>=
-char data1[50], data2[50], data3[50], *datap;
+char d, data1[50], data2[50], data3[50], *datap;
 
-@ @<Read data@>=
+@ @<Read all data@>=
 UBRR1 = 34; // table 18-12 in datasheet
 UCSR1A |= _BV(U2X1);
 UCSR1B |= _BV(RXEN1);
 @#
 while (1) {
   while (!(UCSR1A & _BV(RXC1))) { }
-  c = UDR1;
-  if (c == '+') {
+  d = UDR1;
+  if (d == '+') {
     while (!(UCSR1A & _BV(RXC1))) { }
-    c = UDR1;
-    if (c == '+') {
+    d = UDR1;
+    if (d == '+') {
       while (!(UCSR1A & _BV(RXC1))) { } 
-      c = UDR1; 
-      if (c == '+') break;
+      d = UDR1; 
+      if (d == '+') break;
     }
   }
 }
 @#
 datap = data1;
-while (1) {
-  while (!(UCSR1A & _BV(RXC1))) { }
-  c = UDR1;
-  if (c == '\n') break;
-  *datap++ = c;
-}
-*datap = 0;
-@#
+@<Read data@>@;
 datap = data2;
-while (1) {
-  while (!(UCSR1A & _BV(RXC1))) { }
-  c = UDR1;
-  if (c == '\n') break;
-  *datap++ = c;
-}
-*datap = 0;
-@#
+@<Read data@>@;
 datap = data3;
+@<Read data@>@;
+
+@ @<Read data@>=
 while (1) {
   while (!(UCSR1A & _BV(RXC1))) { }
-  c = UDR1;
-  if (c == '\n') break;
-  *datap++ = c;
+  d = UDR1;
+  if (d == '\n') {
+    UDR1 = '\r'; while (!(UCSR1A & _BV(UDRE1))) { }
+    UDR1 = '\n'; while (!(UCSR1A & _BV(UDRE1))) { }
+    break;
+  }
+  UDR1 = d; while (!(UCSR1A & _BV(UDRE1))) { }
+  *datap++ = d;
 }
 *datap = 0;
 

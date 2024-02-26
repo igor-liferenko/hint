@@ -1,12 +1,9 @@
 cu -l /dev/ttyUSB0 -s 57600
 
 @x
-  @<Setup USB Controller@>@;
+UCSR1B |= _BV(RXEN1);
 @y
-  UBRR1 = 34; // table 18-12 in datasheet
-  UCSR1A |= _BV(U2X1);
-  UCSR1B |= _BV(TXEN1);
-  @<Setup USB Controller@>@;
+UCSR1B |= _BV(RXEN1) | _BV(TXEN1);
 @z
 
 @x
@@ -40,25 +37,6 @@ cu -l /dev/ttyUSB0 -s 57600
     UEINTX &= ~_BV(RXSTPI);
     UDR1='?'; while (!(UCSR1A & _BV(UDRE1))) { }
     UDR1=' '; while (!(UCSR1A & _BV(UDRE1))) { }
-@z
-
-@x set line coding
-  UEINTX &= ~_BV(RXSTPI);
-@y
-  UEINTX &= ~_BV(RXSTPI);
-  UDR1='%'; while (!(UCSR1A & _BV(UDRE1))) { }
-  UDR1=' '; while (!(UCSR1A & _BV(UDRE1))) { }
-@z
-
-@x set control line state
-  UEINTX &= ~_BV(RXSTPI);
-@y
-  wValue = UEDATX | UEDATX << 8;
-  UEINTX &= ~_BV(RXSTPI);
-  UDR1='x'; while (!(UCSR1A & _BV(UDRE1))) { }
-  UDR1='='; while (!(UCSR1A & _BV(UDRE1))) { }
-  hex(wValue);
-  UDR1=' '; while (!(UCSR1A & _BV(UDRE1))) { }
 @z
 
 @x address
@@ -98,11 +76,28 @@ hex(wLength);
 UDR1=' '; while (!(UCSR1A & _BV(UDRE1))) { }
 @z
 
+@x hid report
+UEINTX &= ~_BV(RXSTPI);
+@y
+UEINTX &= ~_BV(RXSTPI);
+UDR1='h'; while (!(UCSR1A & _BV(UDRE1))) { }
+hex(wLength);
+UDR1=' '; while (!(UCSR1A & _BV(UDRE1))) { }
+@z
+
 @x set configuration
 UEINTX &= ~_BV(RXSTPI);
 @y
 UEINTX &= ~_BV(RXSTPI);
 UDR1 = wValue == CONF_NUM ? 's' : '@@'; while (!(UCSR1A & _BV(UDRE1))) { }
+UDR1=' '; while (!(UCSR1A & _BV(UDRE1))) { }
+@z
+
+@x set idle
+UEINTX &= ~_BV(RXSTPI);
+@y
+UEINTX &= ~_BV(RXSTPI);
+UDR1='i'; while (!(UCSR1A & _BV(UDRE1))) { }
 UDR1=' '; while (!(UCSR1A & _BV(UDRE1))) { }
 @z
 
@@ -112,26 +107,6 @@ UECFG1X |= _BV(ALLOC);
 UECFG1X |= _BV(ALLOC);
 if (!(UESTA0X & _BV(CFGOK))) {
   cli();
-  UDR1='3'; while (1) { }
-}
-@z
-
-@x
-UECFG1X |= _BV(ALLOC);
-@y
-UECFG1X |= _BV(ALLOC);
-if (!(UESTA0X & _BV(CFGOK))) {
-  cli();
   UDR1='1'; while (1) { }
-}
-@z
-
-@x
-UECFG1X |= _BV(ALLOC);
-@y
-UECFG1X |= _BV(ALLOC);
-if (!(UESTA0X & _BV(CFGOK))) {
-  cli();
-  UDR1='2'; while (1) { }
 }
 @z
