@@ -35,18 +35,9 @@ void main(void)
     UENUM = 1;
     if (*datap && (UEINTX & _BV(TXINI)))
       @<Process IN packet@>@;
-    if (PORTB & _BV(PB4)) {
-      _delay_ms(1000);
-      datap = data1;
-    }
-    if (PORTB & _BV(PB5)) {
-      _delay_ms(1000);
-      datap = data2;
-    }
-    if (PORTB & _BV(PB6)) {
-      _delay_ms(1000);
-      datap = data3;
-    }
+    if (PORTB & _BV(PB4)) _delay_ms(1000), datap = data1;
+    if (PORTB & _BV(PB5)) _delay_ms(1000), datap = data2;
+    if (PORTB & _BV(PB6)) _delay_ms(1000), datap = data3;
   }
 }
 
@@ -85,7 +76,7 @@ typedef unsigned short U16;
 char d, data1[50], data2[50], data3[50], *datap;
 
 @ @<Read all data@>=
-UBRR1 = 34; // table 18-12 in datasheet
+UBRR1 = 16; // table 18-12 in datasheet
 UCSR1A |= _BV(U2X1);
 UCSR1B |= _BV(RXEN1);
 @#
