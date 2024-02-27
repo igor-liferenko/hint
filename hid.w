@@ -16,8 +16,6 @@
 
 void main(void)
 {
-  PORTB |= _BV(PB0);
-  DDRB |= _BV(PB0);
   DDRD |= _BV(PD5);
   @<Read all data@>@;
   PORTD |= _BV(PD5);
@@ -38,9 +36,9 @@ void main(void)
     UENUM = 1;
     if (*datap && (UEINTX & _BV(TXINI)))
       @<Process IN packet@>@;
-    if ((*datap == 0) && !(PIND & _BV(PD1))) PORTB &= ~_BV(PB0), datap = data1;
-    if ((*datap == 0) && !(PINB & _BV(PB5))) PORTB &= ~_BV(PB0), datap = data2;
-    if ((*datap == 0) && !(PINB & _BV(PB4))) PORTB &= ~_BV(PB0), datap = data3;
+    if ((*datap == 0) && !(PIND & _BV(PD1))) datap = data1; /* first condition serves as debounce */
+    if ((*datap == 0) && !(PINB & _BV(PB5))) datap = data2; /* first condition serves as debounce */
+    if ((*datap == 0) && !(PINB & _BV(PB4))) datap = data3; /* first condition serves as debounce */
   }
 }
 
@@ -75,7 +73,6 @@ typedef unsigned short U16;
   _delay_ms(50);
   @#
   datap++;
-  if (*datap == 0) PORTB |= _BV(PB0);
 }
 
 @ @<Global...@>=
