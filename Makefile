@@ -2,7 +2,7 @@ all:
 	@echo NoOp
 
 h:
-	ctangle hid debug
+	ctangle hid
 	@make --no-print-directory hid
 
 hid:

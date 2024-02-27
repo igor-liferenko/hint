@@ -16,11 +16,14 @@
 
 void main(void)
 {
+  PORTB |= _BV(PB0);
+  DDRB |= _BV(PB0);
   DDRD |= _BV(PD5);
   @<Read all data@>@;
   PORTD |= _BV(PD5);
   @#
-  PORTD |= _BV(PD1) | _BV(PD2) | _BV(PD3);
+  PORTD |= _BV(PD1);
+  PORTB |= _BV(PB4) | _BV(PB5);
   _delay_us(1);
   @#
   @<Setup USB Controller@>@;
@@ -35,9 +38,9 @@ void main(void)
     UENUM = 1;
     if (*datap && (UEINTX & _BV(TXINI)))
       @<Process IN packet@>@;
-    if (!(PIND & _BV(PD3))) _delay_ms(1000), datap = data1;
-    if (!(PIND & _BV(PD2))) _delay_ms(1000), datap = data2;
-    if (!(PIND & _BV(PD1))) _delay_ms(1000), datap = data3;
+    if ((*datap == 0) && !(PIND & _BV(PD1))) PORTB &= ~_BV(PB0), datap = data1;
+    if ((*datap == 0) && !(PINB & _BV(PB5))) PORTB &= ~_BV(PB0), datap = data2;
+    if ((*datap == 0) && !(PINB & _BV(PB4))) PORTB &= ~_BV(PB0), datap = data3;
   }
 }
 
@@ -72,6 +75,7 @@ typedef unsigned short U16;
   _delay_ms(50);
   @#
   datap++;
+  if (*datap == 0) PORTB |= _BV(PB0);
 }
 
 @ @<Global...@>=
@@ -108,7 +112,8 @@ while (1) {
   while (!(UCSR1A & _BV(RXC1))) { }
   d = UDR1;
   if (d == '\n') break;
-  *datap++ = d;
+  if (d == 0) d = '@@';
+  *(datap++) = d;
 }
 *datap = 0;
 
