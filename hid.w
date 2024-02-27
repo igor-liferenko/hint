@@ -1,4 +1,7 @@
 % TODO: make comments to values of all descriptors match HID spec
+% TODO: use low-speed? (then '?'-case in debug.ch and hid.w will not be used)
+% TODO: change *(datap++) to *datap? (check that md5 of compiled binary is the same) and
+%   change (*datap == 0) to !*datap? (in hid.w and debug.ch; check the same way)
 
 \datethis
 
