@@ -11,6 +11,10 @@
 
 @* Program.
 
+WARNING: do not press any button until LED stops glowing (USB connection will not
+be completed because one IN packet arrives before HID report request and we get stuck
+in |@<Process IN packet@>| waiting for next IN packet)
+
 @c
 @<Header files@>@;
 @<Type definitions@>@;
