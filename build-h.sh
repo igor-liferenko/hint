@@ -1,20 +1,20 @@
 #!/bin/bash -x
 
-IMG=lede-imagebuilder-17.01.7-ar71xx-generic.Linux-x86_64
-URL=https://downloads.openwrt.org/releases/17.01.7/targets/ar71xx/generic
-mkdir -p ~/lede
-cd ~/lede
+IMG=openwrt-imagebuilder-19.07.0-rc1-ar71xx-generic.Linux-x86_64
+URL=https://downloads.openwrt.org/releases/19.07.0-rc1/targets/ar71xx/generic
+mkdir -p ~/openwrt
+cd ~/openwrt
 [ -e $IMG.tar.xz ] || wget $URL/$IMG.tar.xz || exit
-rm -fr gl-inet/
-mkdir gl-inet/
-cd gl-inet/
+rm -fr h/
+mkdir h/
+cd h/
 tar -Jxf ../$IMG.tar.xz
 cd $IMG/
 mkdir -p files/etc/
 cat <<'EOF' >files/etc/rc.local
 mount /dev/sda1 /mnt
 cat <<'FOE' | sh &
-sleep 60
+sleep 60 # adjust empirically that all output to ttyATH0 stops
 printf +++ >/dev/ttyATH0
 cat /mnt/data >/dev/ttyATH0
 FOE
@@ -25,8 +25,8 @@ make image PROFILE=gl-inet-6416A-v1 PACKAGES="kmod-usb-storage kmod-fs-vfat" FIL
 { RET=$?; } 2>/dev/null
 { set +x; } 2>/dev/null
 if [ $RET = 0 ]; then
-  ls ~/lede/gl-inet/*/bin/*/*/*/*-squashfs-sysupgrade.bin # mtd -r write /tmp/fw.img firmware
-  ls ~/lede/gl-inet/*/bin/*/*/*/*-squashfs-factory.bin # see below
+  ls ~/openwrt/h/*/bin/*/*/*/*-squashfs-sysupgrade.bin # mtd -r write /tmp/fw.img firmware
+  ls ~/openwrt/h/*/bin/*/*/*/*-squashfs-factory.bin # see below
 fi
 
 # Connect your computer to the LAN or WAN port using internet cable. Leave
