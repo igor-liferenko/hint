@@ -1,6 +1,6 @@
 cu -l /dev/ttyUSB0 -s 115200
 
-@x
+@x show data sent to USB
   datap++;
 @y
   UDR1 = *datap; while (!(UCSR1A & _BV(UDRE1))) { }
@@ -17,7 +17,7 @@ UCSR1B |= _BV(RXEN1);
 UCSR1B |= _BV(RXEN1) | _BV(TXEN1);
 @z
 
-@x
+@x show data read from serial
   if (d == '\n') break;
 @y
   if (d == '\n') {
