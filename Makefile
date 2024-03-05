@@ -5,7 +5,7 @@ h:
 	ctangle hint
 	@make --no-print-directory hint
 
-hid:
+hint:
 	avr-gcc -mmcu=atmega32u4 -DF_CPU=16000000UL -g -Os -o fw.elf hint.c
 	avr-objcopy -O ihex fw.elf fw.hex
 
