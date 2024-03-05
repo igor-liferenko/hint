@@ -16,7 +16,7 @@ mount /dev/sda1 /mnt
 cat <<'FOE' | sh &
 sleep 60 # adjust empirically that all output to ttyATH0 stops
 printf +++ >/dev/ttyATH0
-cat /mnt/data >/dev/ttyATH0
+sed 's/\r$//' /mnt/data.txt | awk 1 >/dev/ttyATH0
 FOE
 exit 0
 EOF
