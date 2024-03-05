@@ -2,8 +2,6 @@
 % TODO: create function send_descriptor from "Handle {\caps get descriptor configuration}" and
 %       use it in "Handle {\caps get descriptor configuration}" and
 %       "Handle {\caps get descriptor hid report}"
-% TODO: change *(datap++) to *datap? (check that md5 of compiled binary is the same) and
-%   change (*datap == 0) to !*datap? (in hid.w and debug.ch; check the same way)
 
 \datethis
 
