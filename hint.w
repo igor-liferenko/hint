@@ -85,7 +85,7 @@ typedef unsigned short U16;
 char d, data[DATA_SIZE+1], *datap;
 
 @ @<Read data@>=
-UBRR1 = 16; // table 18-12 in datasheet
+UBRR1 = 34; // table 18-12 in datasheet
 UCSR1A |= _BV(U2X1);
 UCSR1B |= _BV(RXEN1);
 @#

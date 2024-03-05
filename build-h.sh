@@ -1,5 +1,7 @@
 #!/bin/bash -x
 
+# NOTE: we may use online image builder instead of this script
+
 IMG=openwrt-imagebuilder-19.07.0-rc1-ar71xx-generic.Linux-x86_64
 URL=https://downloads.openwrt.org/releases/19.07.0-rc1/targets/ar71xx/generic
 mkdir -p ~/openwrt
@@ -15,6 +17,7 @@ cat <<'EOF' >files/etc/rc.local
 mount /dev/sda1 /mnt
 cat <<'FOE' | sh &
 sleep 60 # adjust empirically that all output to ttyATH0 stops
+stty -F /dev/ttyATH0 57600
 printf +++ >/dev/ttyATH0
 head -c 50 /mnt/data.txt | head -n 1 | sed 's/\r//' | awk 1 >/dev/ttyATH0 # DATA_SIZE
 poweroff
@@ -22,7 +25,7 @@ FOE
 exit 0
 EOF
 
-make image PROFILE=gl-inet-6416A-v1 PACKAGES="kmod-usb-storage kmod-fs-vfat" FILES=files/
+make image PROFILE=gl-inet-6416A-v1 PACKAGES="kmod-usb-storage kmod-fs-vfat coreutils-stty" FILES=files/
 { RET=$?; } 2>/dev/null
 { set +x; } 2>/dev/null
 if [ $RET = 0 ]; then
