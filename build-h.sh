@@ -16,7 +16,7 @@ mkdir -p files/etc/
 cat <<'EOF' >files/etc/rc.local
 mount /dev/sda1 /mnt
 cat <<'FOE' | sh &
-sleep 60 # adjust empirically that all output to ttyATH0 stops
+sleep 60 # adjust empirically that all output to ttyATH0 stops (temporarily comment stty and test on 115200)
 stty -F /dev/ttyATH0 57600
 printf +++ >/dev/ttyATH0
 head -c 50 /mnt/data.txt | head -n 1 | sed 's/\r//' | awk 1 >/dev/ttyATH0 # DATA_SIZE
