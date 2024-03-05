@@ -226,7 +226,7 @@ for (U8 c = size / EP0_SIZE; c > 0; c--) {
 }
 while (!(UEINTX & _BV(TXINI))) { }
 if (size % EP0_SIZE == 0) {
-  if (size != wLength) UEINTX &= ~_BV(TXINI); /* USB\S5.5.3 */
+  if (size != wLength) UEINTX &= ~_BV(TXINI); /* ZLP (USB\S5.5.3) */
 }
 else {
   for (U8 c = size % EP0_SIZE; c > 0; c--) UEDATX = pgm_read_byte(buf++);
