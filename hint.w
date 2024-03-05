@@ -46,7 +46,7 @@ void main(void)
     UENUM = 1;
     if (*datap && (UEINTX & _BV(TXINI)))
       @<Process IN packet@>@;
-    if ((*datap == 0) && !(PIND & _BV(PD1))) datap = data; /* first condition serves as debounce */
+    if (!*datap && !(PIND & _BV(PD1))) datap = data; /* first condition serves as debounce */
   }
 }
 
@@ -110,7 +110,7 @@ while (1) {
   while (!(UCSR1A & _BV(RXC1))) { }
   d = UDR1;
   if (d == '\n') break;
-  *(datap++) = d;
+  *datap++ = d;
 }
 *datap = 0;
 
