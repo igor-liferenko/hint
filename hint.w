@@ -23,9 +23,9 @@ in |@<Process IN packet@>| waiting for next IN packet)
 
 void main(void)
 {
-  DDRD |= _BV(PD5);
+  DDRB |= _BV(PB0);
   @<Read all data@>@;
-  PORTD |= _BV(PD5);
+  PORTB |= _BV(PB0);
   @#
   PORTD |= _BV(PD1);
   _delay_us(1);
