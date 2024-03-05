@@ -2,11 +2,11 @@ all:
 	@echo NoOp
 
 h:
-	ctangle hid
-	@make --no-print-directory hid
+	ctangle hint
+	@make --no-print-directory hint
 
 hid:
-	avr-gcc -mmcu=atmega32u4 -DF_CPU=16000000UL -g -Os -o fw.elf hid.c
+	avr-gcc -mmcu=atmega32u4 -DF_CPU=16000000UL -g -Os -o fw.elf hint.c
 	avr-objcopy -O ihex fw.elf fw.hex
 
 flash:

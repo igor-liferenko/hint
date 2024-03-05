@@ -496,4 +496,4 @@ USBINT  & USB General Interrupt \cr
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <util/delay.h>
-#include "hid.h"
+#include "hint.h"
