@@ -27,7 +27,7 @@ void main(void)
   @<Read all data@>@;
   PORTD |= _BV(PD5);
   @#
-  PORTD |= _BV(PD0) | _BV(PD1) | _BV(PD4);
+  PORTD |= _BV(PD1);
   _delay_us(1);
   @#
   @<Setup USB Controller@>@;
@@ -43,8 +43,6 @@ void main(void)
     if (*datap && (UEINTX & _BV(TXINI)))
       @<Process IN packet@>@;
     if ((*datap == 0) && !(PIND & _BV(PD1))) datap = data1; /* first condition serves as debounce */
-    if ((*datap == 0) && !(PIND & _BV(PD4))) datap = data2; /* first condition serves as debounce */
-    if ((*datap == 0) && !(PIND & _BV(PD0))) datap = data3; /* first condition serves as debounce */
   }
 }
 
