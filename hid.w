@@ -219,13 +219,17 @@ wLength = UEDATX | UEDATX << 8;
 UEINTX &= ~_BV(RXSTPI);
 buf = &conf_desc;
 size = wLength > sizeof conf_desc ? sizeof conf_desc : wLength;
-while (size) {
+for (U8 c = size / EP0_SIZE; c > 0; c--) {
   while (!(UEINTX & _BV(TXINI))) { }
-  for (U8 c = EP0_SIZE; c && size; c--) UEDATX = pgm_read_byte(buf++), size--;
+  for (U8 c = EP0_SIZE; c > 0; c--) UEDATX = pgm_read_byte(buf++);
   UEINTX &= ~_BV(TXINI);
 }
-if ((wLength > sizeof conf_desc ? sizeof conf_desc : wLength) % EP0_SIZE == 0) { /* USB\S5.5.3 */
-  while (!(UEINTX & _BV(TXINI))) { }
+while (!(UEINTX & _BV(TXINI))) { }
+if (size % EP0_SIZE == 0) {
+  if (size != wLength) UEINTX &= ~_BV(TXINI); /* USB\S5.5.3 */
+}
+else {
+  for (U8 c = size % EP0_SIZE; c > 0; c--) UEDATX = pgm_read_byte(buf++);
   UEINTX &= ~_BV(TXINI);
 }
 while (!(UEINTX & _BV(RXOUTI))) { }
