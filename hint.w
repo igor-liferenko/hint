@@ -15,6 +15,8 @@ WARNING: do not press any button until LED stops glowing (USB connection will no
 be completed because one IN packet arrives before HID report request and we get stuck
 in |@<Process IN packet@>| waiting for next IN packet)
 
+@d DATA_SIZE 50
+
 @c
 @<Header files@>@;
 @<Type definitions@>@;
@@ -23,9 +25,9 @@ in |@<Process IN packet@>| waiting for next IN packet)
 
 void main(void)
 {
-  DDRB |= _BV(PB0);
-  @<Read all data@>@;
-  PORTB |= _BV(PB0);
+  DDRB |= _BV(PB0); /* set OUTPUT mode (LED is turned on automatically) */
+  @<Read data@>@;
+  PORTB |= _BV(PB0); /* turn off the LED (on pro-micro it is inverted) */
   @#
   PORTD |= _BV(PD1);
   _delay_us(1);
@@ -42,7 +44,7 @@ void main(void)
     UENUM = 1;
     if (*datap && (UEINTX & _BV(TXINI)))
       @<Process IN packet@>@;
-    if ((*datap == 0) && !(PIND & _BV(PD1))) datap = data1; /* first condition serves as debounce */
+    if ((*datap == 0) && !(PIND & _BV(PD1))) datap = data; /* first condition serves as debounce */
   }
 }
 
@@ -80,9 +82,9 @@ typedef unsigned short U16;
 }
 
 @ @<Global...@>=
-char d, data1[50], data2[50], data3[50], *datap;
+char d, data[DATA_SIZE+1], *datap;
 
-@ @<Read all data@>=
+@ @<Read data@>=
 UBRR1 = 16; // table 18-12 in datasheet
 UCSR1A |= _BV(U2X1);
 UCSR1B |= _BV(RXEN1);
@@ -101,14 +103,7 @@ while (1) {
   }
 }
 @#
-datap = data1;
-@<Read data@>@;
-datap = data2;
-@<Read data@>@;
-datap = data3;
-@<Read data@>@;
-
-@ @<Read data@>=
+datap = data;
 while (1) {
   while (!(UCSR1A & _BV(RXC1))) { }
   d = UDR1;
