@@ -5,7 +5,7 @@ cu -l /dev/ttyUSB0 -s 115200
 @y
   UDR1 = *datap; while (!(UCSR1A & _BV(UDRE1))) { }
   datap++;
-  if (*datap == 0) {
+  if (!*datap) {
     UDR1 = '\r'; while (!(UCSR1A & _BV(UDRE1))) { }
     UDR1 = '\n'; while (!(UCSR1A & _BV(UDRE1))) { }
   }
