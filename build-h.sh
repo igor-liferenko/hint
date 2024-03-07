@@ -16,16 +16,18 @@ mkdir -p files/etc/
 cat <<'EOF' >files/etc/rc.local
 mount /dev/sda1 /mnt
 cat <<'FOE' | sh &
-sleep 60 # adjust empirically that all output to ttyATH0 stops (temporarily comment stty and test on 115200)
-stty -F /dev/ttyATH0 57600
-printf +++ >/dev/ttyATH0
-head -c 50 /mnt/data.txt | head -n 1 | sed 's/\r//' | awk 1 >/dev/ttyATH0 # DATA_SIZE
-poweroff
+sleep 60 # adjust empirically that all output to ttyATH0 stops (115200)
+if [ -s /mnt/data.txt ]; then
+  printf +++ >/dev/ttyATH0
+  head -c 50 /mnt/data.txt | head -n 1 | sed 's/[\r\n]//g' >/dev/ttyATH0 # DATA_SIZE
+  echo >/dev/ttyATH0
+  poweroff
+fi
 FOE
 exit 0
 EOF
 
-make image PROFILE=gl-inet-6416A-v1 PACKAGES="kmod-usb-storage kmod-fs-vfat coreutils-stty" FILES=files/
+make image PROFILE=gl-inet-6416A-v1 PACKAGES="kmod-usb-storage kmod-fs-vfat" FILES=files/
 { RET=$?; } 2>/dev/null
 { set +x; } 2>/dev/null
 if [ $RET = 0 ]; then

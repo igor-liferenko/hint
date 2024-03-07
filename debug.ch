@@ -1,5 +1,3 @@
-cu -l /dev/ttyUSB0 -s 57600
-
 @x show data sent to USB
   datap++;
 @y

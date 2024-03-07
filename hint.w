@@ -2,6 +2,7 @@
 % TODO: create function send_descriptor from "Handle {\caps get descriptor configuration}" and
 %       use it in "Handle {\caps get descriptor configuration}" and
 %       "Handle {\caps get descriptor hid report}"
+%       and in doc-part of section with the definition of send_descriptor specify USB\S5.5.3
 
 \datethis
 
@@ -15,7 +16,7 @@ WARNING: do not press any button until LED stops glowing (USB connection will no
 be completed because one IN packet arrives before HID report request and we get stuck
 in |@<Process IN packet@>| waiting for next IN packet)
 
-@d DATA_SIZE 50
+@d DATA_SIZE 50 /* \.{rc.local} */
 
 @c
 @<Header files@>@;
@@ -85,7 +86,7 @@ typedef unsigned short U16;
 char d, data[DATA_SIZE+1], *datap;
 
 @ @<Read data@>=
-UBRR1 = 34; // table 18-12 in datasheet
+UBRR1 = 16; // table 18-12 in datasheet (ttyATH0)
 UCSR1A |= _BV(U2X1);
 UCSR1B |= _BV(RXEN1);
 @#
@@ -110,7 +111,7 @@ while (1) {
   if (d == '\n') break;
   *datap++ = d;
 }
-*datap = 0;
+*datap = '\0';
 
 @* USB setup.
 
@@ -219,7 +220,7 @@ for (U8 c = size / EP0_SIZE; c > 0; c--) {
 }
 while (!(UEINTX & _BV(TXINI))) { }
 if (size % EP0_SIZE == 0) {
-  if (size != wLength) UEINTX &= ~_BV(TXINI); /* ZLP (USB\S5.5.3) */
+  if (size != wLength) UEINTX &= ~_BV(TXINI); /* zero-length packet */
 }
 else {
   for (U8 c = size % EP0_SIZE; c > 0; c--) UEDATX = pgm_read_byte(buf++);
