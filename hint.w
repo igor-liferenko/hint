@@ -117,6 +117,7 @@ while (1) {
 
 @ \.{USB\_RESET} signal is sent when device is attached and when USB host reboots.
 
+TODO: see QUIRK in usb repo
 TODO: use d40- as event for configuring EP0 and get rid of ISR?
 
 @<Create ISR for USB\_RESET@>=
