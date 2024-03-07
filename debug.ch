@@ -1,29 +1,7 @@
-@x show data sent to USB
-  datap++;
-@y
-  UDR1 = *datap; while (!(UCSR1A & _BV(UDRE1))) { }
-  datap++;
-  if (!*datap) {
-    UDR1 = '\r'; while (!(UCSR1A & _BV(UDRE1))) { }
-    UDR1 = '\n'; while (!(UCSR1A & _BV(UDRE1))) { }
-  }
-@z
-
 @x
 UCSR1B |= _BV(RXEN1);
 @y
 UCSR1B |= _BV(RXEN1) | _BV(TXEN1);
-@z
-
-@x show data read from serial
-  if (d == '\n') break;
-@y
-  if (d == '\n') {
-    UDR1 = '\r'; while (!(UCSR1A & _BV(UDRE1))) { }
-    UDR1 = '\n'; while (!(UCSR1A & _BV(UDRE1))) { }
-    break;
-  }
-  UDR1 = d; while (!(UCSR1A & _BV(UDRE1))) { }
 @z
 
 @x
