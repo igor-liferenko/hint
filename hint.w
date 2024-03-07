@@ -1,8 +1,4 @@
 % TODO: make comments to values of all descriptors match HID spec
-% TODO: create function send_descriptor from "Handle {\caps get descriptor configuration}" and
-%       use it in "Handle {\caps get descriptor configuration}" and
-%       "Handle {\caps get descriptor hid report}"
-%       and in doc-part of section with the definition of send_descriptor specify USB\S5.5.3
 
 \datethis
 
@@ -22,6 +18,7 @@ in |@<Process IN packet@>| waiting for next IN packet)
 @<Header files@>@;
 @<Type definitions@>@;
 @<Global variables@>@;
+@<Functions@>@;
 @<Create ISR...@>@;
 
 void main(void)
@@ -161,6 +158,26 @@ U16 wLength;
 U16 size;
 const void *buf;
 
+@ USB\S5.5.3
+
+@<Functions@>=
+void send_descriptor(void)
+{
+  for (U8 c = size / EP0_SIZE; c > 0; c--) {
+    while (!(UEINTX & _BV(TXINI))) { }
+    for (U8 c = EP0_SIZE; c > 0; c--) UEDATX = pgm_read_byte(buf++);
+    UEINTX &= ~_BV(TXINI);
+  }
+  while (!(UEINTX & _BV(TXINI))) { }
+  if (size % EP0_SIZE == 0) {
+    if (size != wLength) UEINTX &= ~_BV(TXINI); /* zero-length packet */
+  }
+  else {
+    for (U8 c = size % EP0_SIZE; c > 0; c--) UEDATX = pgm_read_byte(buf++);
+    UEINTX &= ~_BV(TXINI);
+  }
+}
+
 @ @<Process CONTROL packet@>=
 switch (UEDATX | UEDATX << 8) { /* Request and Request Type */
 case 0x0500: @/
@@ -214,19 +231,7 @@ wLength = UEDATX | UEDATX << 8;
 UEINTX &= ~_BV(RXSTPI);
 buf = &conf_desc;
 size = wLength > sizeof conf_desc ? sizeof conf_desc : wLength;
-for (U8 c = size / EP0_SIZE; c > 0; c--) {
-  while (!(UEINTX & _BV(TXINI))) { }
-  for (U8 c = EP0_SIZE; c > 0; c--) UEDATX = pgm_read_byte(buf++);
-  UEINTX &= ~_BV(TXINI);
-}
-while (!(UEINTX & _BV(TXINI))) { }
-if (size % EP0_SIZE == 0) {
-  if (size != wLength) UEINTX &= ~_BV(TXINI); /* zero-length packet */
-}
-else {
-  for (U8 c = size % EP0_SIZE; c > 0; c--) UEDATX = pgm_read_byte(buf++);
-  UEINTX &= ~_BV(TXINI);
-}
+send_descriptor();
 while (!(UEINTX & _BV(RXOUTI))) { }
 UEINTX &= ~_BV(RXOUTI);
 
@@ -237,8 +242,7 @@ wLength = UEDATX | UEDATX << 8;
 UEINTX &= ~_BV(RXSTPI);
 buf = &hid_rprt_desc;
 size = wLength > sizeof hid_rprt_desc ? sizeof hid_rprt_desc : wLength;
-while (size) UEDATX = pgm_read_byte(buf++), size--;
-UEINTX &= ~_BV(TXINI);
+send_descriptor();
 while (!(UEINTX & _BV(RXOUTI))) { }
 UEINTX &= ~_BV(RXOUTI);
 
