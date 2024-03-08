@@ -52,13 +52,9 @@ typedef unsigned short U16;
 
 @ @<Process IN packet@>= {
   UEINTX &= ~_BV(TXINI);
-  U8 mod = 0, btn = 0x04; /* \.a */
-  if (*datap-32 >= 0 && *datap-32 <= 94)
-    mod = ascii_to_hid_key_map[*datap-32][0],
-    btn = ascii_to_hid_key_map[*datap-32][1];
-  UEDATX = mod;
+  UEDATX = ascii_to_hid_key_map[*datap-32][0];
   UEDATX = 0;
-  UEDATX = btn;
+  UEDATX = ascii_to_hid_key_map[*datap-32][1];
   UEDATX = 0;
   UEDATX = 0;
   UEDATX = 0;
