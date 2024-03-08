@@ -159,7 +159,7 @@ U16 wLength;
 @ USB\S5.5.3
 
 @<Functions@>=
-void send_descriptor(void *buf, U16 size)
+void send_descriptor(const void *buf, U16 size)
 {
   for (U8 c = size / EP0_SIZE; c > 0; c--) {
     for (U8 c = EP0_SIZE; c > 0; c--) UEDATX = pgm_read_byte(buf++);
