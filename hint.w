@@ -155,27 +155,22 @@ UDIEN |= _BV(EORSTE);
 U16 wValue;
 U16 wIndex;
 U16 wLength;
-U16 size;
-const void *buf;
 
 @ USB\S5.5.3
 
 @<Functions@>=
-void send_descriptor(void)
+void send_descriptor(void *buf, U16 size)
 {
   for (U8 c = size / EP0_SIZE; c > 0; c--) {
-    while (!(UEINTX & _BV(TXINI))) { }
     for (U8 c = EP0_SIZE; c > 0; c--) UEDATX = pgm_read_byte(buf++);
     UEINTX &= ~_BV(TXINI);
+    if (c != 1 || size % EP0_SIZE != 0 || size != wLength) while (!(UEINTX & _BV(TXINI))) { }
   }
-  while (!(UEINTX & _BV(TXINI))) { }
-  if (size % EP0_SIZE == 0) {
-    if (size != wLength) UEINTX &= ~_BV(TXINI); /* zero-length packet */
-  }
-  else {
+  if (size % EP0_SIZE != 0) {
     for (U8 c = size % EP0_SIZE; c > 0; c--) UEDATX = pgm_read_byte(buf++);
     UEINTX &= ~_BV(TXINI);
   }
+  else if (size != wLength) UEINTX &= ~_BV(TXINI);
 }
 
 @ @<Process CONTROL packet@>=
@@ -218,9 +213,7 @@ UDADDR |= _BV(ADDEN);
 (void) UEDATX; @+ (void) UEDATX;
 wLength = UEDATX | UEDATX << 8;
 UEINTX &= ~_BV(RXSTPI);
-buf = &dev_desc;
-size = wLength > sizeof dev_desc ? sizeof dev_desc : wLength;
-send_descriptor();
+send_descriptor(&dev_desc, wLength > sizeof dev_desc ? sizeof dev_desc : wLength);
 while (!(UEINTX & _BV(RXOUTI))) { }
 UEINTX &= ~_BV(RXOUTI);
 
@@ -228,9 +221,7 @@ UEINTX &= ~_BV(RXOUTI);
 (void) UEDATX; @+ (void) UEDATX;
 wLength = UEDATX | UEDATX << 8;
 UEINTX &= ~_BV(RXSTPI);
-buf = &conf_desc;
-size = wLength > sizeof conf_desc ? sizeof conf_desc : wLength;
-send_descriptor();
+send_descriptor(&conf_desc, wLength > sizeof conf_desc ? sizeof conf_desc : wLength);
 while (!(UEINTX & _BV(RXOUTI))) { }
 UEINTX &= ~_BV(RXOUTI);
 
@@ -239,9 +230,7 @@ UEINTX &= ~_BV(RXOUTI);
 (void) UEDATX; @+ (void) UEDATX;
 wLength = UEDATX | UEDATX << 8;
 UEINTX &= ~_BV(RXSTPI);
-buf = &hid_rprt_desc;
-size = wLength > sizeof hid_rprt_desc ? sizeof hid_rprt_desc : wLength;
-send_descriptor();
+send_descriptor(&hid_rprt_desc, wLength > sizeof hid_rprt_desc ? sizeof hid_rprt_desc : wLength);
 while (!(UEINTX & _BV(RXOUTI))) { }
 UEINTX &= ~_BV(RXOUTI);
 
