@@ -8,10 +8,6 @@
 
 @* Program.
 
-WARNING: do not press the button until LED stops glowing (USB connection will not
-be completed because one IN packet arrives before HID report request and we get stuck
-in |@<Process IN packet@>| waiting for next IN packet)
-
 @d DATA_SIZE 50 /* if you change here, change in \.{rc.local} */
 
 @c
@@ -50,33 +46,37 @@ void main(void)
 typedef unsigned char U8;
 typedef unsigned short U16;
 
+@ @<Global...@>=
+U8 pressed = 0;
+
 @ @<Process IN packet@>= {
   UEINTX &= ~_BV(TXINI);
-  UEDATX = ascii_to_hid_key_map[*datap-32][0];
-  UEDATX = 0;
-  UEDATX = ascii_to_hid_key_map[*datap-32][1];
-  UEDATX = 0;
-  UEDATX = 0;
-  UEDATX = 0;
-  UEDATX = 0;
-  UEDATX = 0;
-  UEINTX &= ~_BV(FIFOCON);
-  _delay_ms(10);
-  @#
-  while (!(UEINTX & _BV(TXINI))) { }
-  UEINTX &= ~_BV(TXINI);
-  UEDATX = 0;
-  UEDATX = 0;
-  UEDATX = 0;
-  UEDATX = 0;
-  UEDATX = 0;
-  UEDATX = 0;
-  UEDATX = 0;
-  UEDATX = 0;
-  UEINTX &= ~_BV(FIFOCON);
-  _delay_ms(50);
-  @#
-  datap++;
+  pressed = !pressed;
+  if (pressed) {
+    UEDATX = ascii_to_hid_key_map[*datap-32][0];
+    UEDATX = 0;
+    UEDATX = ascii_to_hid_key_map[*datap-32][1];
+    UEDATX = 0;
+    UEDATX = 0;
+    UEDATX = 0;
+    UEDATX = 0;
+    UEDATX = 0;
+    UEINTX &= ~_BV(FIFOCON);
+    _delay_ms(10);
+    datap++;
+  }
+  else {
+    UEDATX = 0;
+    UEDATX = 0;
+    UEDATX = 0;
+    UEDATX = 0;
+    UEDATX = 0;
+    UEDATX = 0;
+    UEDATX = 0;
+    UEDATX = 0;
+    UEINTX &= ~_BV(FIFOCON);
+    _delay_ms(50);
+  }
 }
 
 @ @<Global...@>=
