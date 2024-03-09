@@ -1,5 +1,5 @@
 // generated using "HID report tool"
-const U8 hid_rprt_desc[] PROGMEM = {
+const uint8_t hid_rprt_desc[] PROGMEM = {
   0x05, 0x01, // USAGE_PAGE (Generic Desktop)
   0x09, 0x06, // USAGE (Keyboard)
   0xa1, 0x01, // COLLECTION (Application)
