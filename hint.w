@@ -453,5 +453,5 @@ USBINT  & USB General Interrupt \cr
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <util/delay.h>
-#include "hid.h"
-#include "hint.h"
+#include "hid.h" /* |hid_rprt_desc| */
+#include "hint.h" /* |ascii_to_hid_key_map| */
