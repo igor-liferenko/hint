@@ -12,7 +12,7 @@ WARNING: do not press the button until LED stops glowing (USB connection will no
 be completed because one IN packet arrives before HID report request and we get stuck
 in |@<Process IN packet@>| waiting for next IN packet)
 
-@d DATA_SIZE 50 /* \.{rc.local} */
+@d DATA_SIZE 50 /* if you change here, change in \.{rc.local} */
 
 @c
 @<Header files@>@;
@@ -156,7 +156,7 @@ U16 wValue;
 U16 wIndex;
 U16 wLength;
 
-@ USB\S5.5.3
+@ \S5.5.3 in USB spec.
 
 @<Functions@>=
 void send_descriptor(const void *buf, U16 size)
@@ -164,9 +164,9 @@ void send_descriptor(const void *buf, U16 size)
   for (U8 c = size / EP0_SIZE; c > 0; c--) {
     for (U8 c = EP0_SIZE; c > 0; c--) UEDATX = pgm_read_byte(buf++);
     UEINTX &= ~_BV(TXINI);
-    if (c != 1 || size % EP0_SIZE != 0 || size != wLength) while (!(UEINTX & _BV(TXINI))) { }
+    if (c != 1 || size % EP0_SIZE || size != wLength) while (!(UEINTX & _BV(TXINI))) { }
   }
-  if (size % EP0_SIZE != 0) {
+  if (size % EP0_SIZE) {
     for (U8 c = size % EP0_SIZE; c > 0; c--) UEDATX = pgm_read_byte(buf++);
     UEINTX &= ~_BV(TXINI);
   }

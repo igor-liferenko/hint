@@ -19,8 +19,7 @@ cat <<'FOE' | sh &
 sleep 60 # adjust empirically that all output to ttyATH0 stops (115200)
 if [ -s /mnt/data.txt ]; then
   printf +++ >/dev/ttyATH0
-  # TODO: replace sed with tr to delete all except 95 visible ASCII characters
-  head -c 50 /mnt/data.txt | head -n 1 | sed 's/[\r\n]//g' >/dev/ttyATH0 # DATA_SIZE
+  head -c 50 /mnt/data.txt | head -n 1 | tr -dc ' -~' >/dev/ttyATH0 # if you change here, change DATA_SIZE in hint.w
   echo >/dev/ttyATH0
   poweroff
 fi
