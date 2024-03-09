@@ -335,7 +335,7 @@ SIZEOF_THIS, @/
 0x00, /* no protocol */
 0 /* no string */
 
-@*2 HID descriptor.
+@*3 HID descriptor.
 
 @<Initialize HID descriptor@>=
 SIZEOF_THIS,
@@ -346,7 +346,7 @@ SIZEOF_THIS,
 0x22, @/
 sizeof hid_rprt_desc
 
-@*2 EP1 descriptor.
+@*3 EP1 descriptor.
 
 \S9.6.6 in USB spec.
 
