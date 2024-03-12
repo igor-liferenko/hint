@@ -32,9 +32,9 @@ void main(void)
     if (UEINTX & _BV(RXSTPI))
       @<Process CONTROL packet@>@;
     UENUM = 1;
-    if (*datap && (UEINTX & _BV(TXINI)))
+    if (*datap != '\0' && (UEINTX & _BV(TXINI)))
       @<Process IN packet@>@;
-    if (!*datap && !(PIND & _BV(PD1))) datap = data; /* first condition serves as debounce */
+    if (*datap == '\0' && !(PIND & _BV(PD1))) datap = data; /* first condition serves as debounce */
   }
 }
 
