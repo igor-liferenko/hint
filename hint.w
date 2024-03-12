@@ -22,15 +22,11 @@ void main(void)
   DDRB |= _BV(PB0); /* set OUTPUT mode (LED is turned on automatically) */
   @<Read data@>@;
   PORTB |= _BV(PB0); /* turn off the LED (on pro-micro it is inverted) */
-  @#
-  PORTD |= _BV(PD1);
-  _delay_us(1);
-  @#
+  PORTD |= _BV(PD1), _delay_us(1); /* pull-up */
   @<Setup USB Controller@>@;
   sei();
   UDCON &= ~_BV(DETACH); /* attach after we enabled interrupts, because
     USB\_RESET arrives after attach */
-  @#
   while (1) {
     UENUM = 0;
     if (UEINTX & _BV(RXSTPI))
