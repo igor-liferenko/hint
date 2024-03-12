@@ -59,7 +59,6 @@ U8 pressed = 0;
     UEDATX = 0;
     UEINTX &= ~_BV(FIFOCON);
     _delay_ms(10);
-    datap++;
   }
   else {
     UEDATX = 0;
@@ -72,6 +71,7 @@ U8 pressed = 0;
     UEDATX = 0;
     UEINTX &= ~_BV(FIFOCON);
     _delay_ms(50);
+    datap++;
   }
 }
 
