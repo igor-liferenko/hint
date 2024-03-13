@@ -61,6 +61,7 @@ U8 pressed = 0;
     _delay_ms(10);
   }
   else {
+    datap++;
     UEDATX = 0;
     UEDATX = 0;
     UEDATX = 0;
@@ -71,7 +72,6 @@ U8 pressed = 0;
     UEDATX = 0;
     UEINTX &= ~_BV(FIFOCON);
     _delay_ms(50);
-    datap++;
   }
 }
 
@@ -117,8 +117,6 @@ TODO: use d40- as event for configuring EP0 and get rid of ISR?
 @.ISR@>@t}\begingroup\def\vb#1{\.{#1}\endgroup@>@=ISR@>
   (@.USB\_GEN\_vect@>@t}\begingroup\def\vb#1{\.{#1}\endgroup@>@=USB_GEN_vect@>)
 {
-  UDINT &= ~_BV(EORSTI);
-  @#
   /* TODO: datasheet section 21.13 says that ep0 can be configured before detach - try to do this
      there instead of in ISR (and/or try to delete `de-configure' lines) */
   UENUM = 0;
@@ -133,6 +131,8 @@ TODO: use d40- as event for configuring EP0 and get rid of ISR?
   UENUM = 1;
   UECONX &= ~_BV(EPEN);
   UECFG1X &= ~_BV(ALLOC);
+  @#
+  UDINT &= ~_BV(EORSTI);
 }
 
 @ @<Setup USB Controller@>=
