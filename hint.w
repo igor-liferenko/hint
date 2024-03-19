@@ -110,27 +110,14 @@ while (1) {
 
 @ \.{USB\_RESET} signal is sent when device is attached and when USB host reboots.
 
-TODO: see QUIRK in usb repo
-TODO: use d40- as event for configuring EP0 and get rid of ISR?
-
 @<Create ISR for USB\_RESET@>=
 @.ISR@>@t}\begingroup\def\vb#1{\.{#1}\endgroup@>@=ISR@>
   (@.USB\_GEN\_vect@>@t}\begingroup\def\vb#1{\.{#1}\endgroup@>@=USB_GEN_vect@>)
 {
-  /* TODO: datasheet section 21.13 says that ep0 can be configured before detach - try to do this
-     there instead of in ISR (and/or try to delete `de-configure' lines) */
   UENUM = 0;
-  UECONX &= ~_BV(EPEN); /* de-configure */
-  UECFG1X &= ~_BV(ALLOC); /* de-configure */
   UECONX |= _BV(EPEN);
   UECFG0X = 0;
-  UECFG1X = _BV(EPSIZE0) | _BV(EPSIZE1); /* 64 bytes */
-  UECFG1X |= _BV(ALLOC);
-  @#
-  /* TODO: try to delete the following */
-  UENUM = 1;
-  UECONX &= ~_BV(EPEN);
-  UECFG1X &= ~_BV(ALLOC);
+  UECFG1X = _BV(EPSIZE0) | _BV(EPSIZE1) | _BV(ALLOC); /* 64 bytes */
   @#
   UDINT &= ~_BV(EORSTI);
 }
@@ -358,8 +345,7 @@ SIZEOF_THIS, @/
 UENUM = 1;
 UECONX |= _BV(EPEN);
 UECFG0X = _BV(EPTYPE1) | _BV(EPTYPE0) | _BV(EPDIR);
-UECFG1X = 0;
-UECFG1X |= _BV(ALLOC);
+UECFG1X = _BV(ALLOC);
 
 @*2 \bf Configuration descriptor.
 

@@ -5,16 +5,6 @@ UCSR1B |= _BV(RXEN1) | _BV(TXEN1);
 @z
 
 @x
-  UECFG1X |= _BV(ALLOC);
-@y
-  UECFG1X |= _BV(ALLOC);
-  if (!(UESTA0X & _BV(CFGOK))) {
-    cli();
-    UDR1='0'; while (1) { }
-  }
-@z
-
-@x
   UDINT &= ~_BV(EORSTI);
 @y
   UDINT &= ~_BV(EORSTI);
@@ -95,14 +85,4 @@ UEINTX &= ~_BV(RXSTPI);
 UEINTX &= ~_BV(RXSTPI);
 UDR1='i'; while (!(UCSR1A & _BV(UDRE1))) { }
 UDR1=' '; while (!(UCSR1A & _BV(UDRE1))) { }
-@z
-
-@x
-UECFG1X |= _BV(ALLOC);
-@y
-UECFG1X |= _BV(ALLOC);
-if (!(UESTA0X & _BV(CFGOK))) {
-  cli();
-  UDR1='1'; while (1) { }
-}
 @z
