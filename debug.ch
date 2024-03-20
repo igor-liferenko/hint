@@ -7,17 +7,25 @@ UCSR1B |= _BV(RXEN1) | _BV(TXEN1);
 @z
 
 @x
+  UECFG1X = _BV(ALLOC);
+@y
+  UECFG1X = _BV(ALLOC);
+  if (!(UESTA0X & _BV(CFGOK))) DDRD |= _BV(PD5);
+@z
+
+@x
   UDINT &= ~_BV(EORSTI);
 @y
   UDINT &= ~_BV(EORSTI);
-  UDR1 = '!'; while (!(UCSR1A & _BV(UDRE1))) { }
+  tx_char('!');
 @z
 
 @x
 @* USB connection.
 @y
 @* USB connection.
-@d HEX(c) UDR1 = ((c)<10 ? (c)+'0' : (c)-10+'A'); while (!(UCSR1A & _BV(UDRE1))) { }
+@d tx_char(c) do { UDR1 = c; while (!(UCSR1A & _BV(UDRE1))) { } } while (0)
+@d HEX(c) tx_char((c)<10 ? (c)+'0' : (c)-10+'A') 
 @d hex(c) HEX((c >> 4) & 0x0f); HEX(c & 0x0f);
 @z
 
@@ -25,66 +33,71 @@ UCSR1B |= _BV(RXEN1) | _BV(TXEN1);
     UEINTX &= ~_BV(RXSTPI);
 @y
     UEINTX &= ~_BV(RXSTPI);
-    UDR1='?'; while (!(UCSR1A & _BV(UDRE1))) { }
-    UDR1=' '; while (!(UCSR1A & _BV(UDRE1))) { }
+    tx_char('?');
+    tx_char(' ');
 @z
 
 @x address
 UEINTX &= ~_BV(RXSTPI);
 @y
 UEINTX &= ~_BV(RXSTPI);
-UDR1='\n'; while (!(UCSR1A & _BV(UDRE1))) { }
-UDR1='a'; while (!(UCSR1A & _BV(UDRE1))) { }
-UDR1='='; while (!(UCSR1A & _BV(UDRE1))) { }
+tx_char('\n');
+tx_char('a');
+tx_char('=');
 hex(wValue);
-UDR1=' '; while (!(UCSR1A & _BV(UDRE1))) { }
+tx_char(' ');
 @z
 
 @x device
 UEINTX &= ~_BV(RXSTPI);
 @y
 UEINTX &= ~_BV(RXSTPI);
-UDR1='d'; while (!(UCSR1A & _BV(UDRE1))) { }
+tx_char('d');
 hex(wLength);
-if (UDADDR & _BV(ADDEN)) {
-  UDR1=' '; while (!(UCSR1A & _BV(UDRE1))) { }
-}
-else {
-  UDR1='-'; while (!(UCSR1A & _BV(UDRE1))) { }
-  UDR1='\n'; while (!(UCSR1A & _BV(UDRE1))) { }
-}
+if (UDADDR & _BV(ADDEN))
+  tx_char(' ');
+else
+  tx_char('-'),
+  tx_char('\n');
 @z
 
 @x configuration
 UEINTX &= ~_BV(RXSTPI);
 @y
 UEINTX &= ~_BV(RXSTPI);
-UDR1='c'; while (!(UCSR1A & _BV(UDRE1))) { }
+tx_char('c');
 hex(wLength);
-UDR1=' '; while (!(UCSR1A & _BV(UDRE1))) { }
+tx_char(' ');
 @z
 
 @x hid report
 UEINTX &= ~_BV(RXSTPI);
 @y
 UEINTX &= ~_BV(RXSTPI);
-UDR1='h'; while (!(UCSR1A & _BV(UDRE1))) { }
+tx_char('h');
 hex(wLength);
-UDR1=' '; while (!(UCSR1A & _BV(UDRE1))) { }
+tx_char(' ');
 @z
 
 @x set configuration
 UEINTX &= ~_BV(RXSTPI);
 @y
 UEINTX &= ~_BV(RXSTPI);
-UDR1 = wValue == CONF_NUM ? 's' : '@@'; while (!(UCSR1A & _BV(UDRE1))) { }
-UDR1=' '; while (!(UCSR1A & _BV(UDRE1))) { }
+tx_char(wValue == CONF_NUM ? 's' : '@@');
+tx_char(' ');
 @z
 
 @x set idle
 UEINTX &= ~_BV(RXSTPI);
 @y
 UEINTX &= ~_BV(RXSTPI);
-UDR1='i'; while (!(UCSR1A & _BV(UDRE1))) { }
-UDR1=' '; while (!(UCSR1A & _BV(UDRE1))) { }
+tx_char('i');
+tx_char(' ');
+@z
+
+@x
+UECFG1X = _BV(ALLOC);
+@y
+UECFG1X = _BV(ALLOC);
+if (!(UESTA0X & _BV(CFGOK))) DDRD |= _BV(PD5);
 @z

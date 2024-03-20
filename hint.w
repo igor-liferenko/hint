@@ -108,20 +108,10 @@ while (1) {
 
 @* USB setup.
 
-@ USB\_RESET signal is sent when device is attached and when USB host reboots.
-All endpoints are destroyed on USB\_RESET (ensured by checking EPEN and ALLOC).
-
-@<Create ISR for USB\_RESET@>=
+@ @<Create ISR for USB\_RESET@>=
 @.ISR@>@t}\begingroup\def\vb#1{\.{#1}\endgroup@>@=ISR@>
   (@.USB\_GEN\_vect@>@t}\begingroup\def\vb#1{\.{#1}\endgroup@>@=USB_GEN_vect@>)
 {
-  UENUM = 0;
-  if (UECONX & _BV(EPEN)) DDRD |= _BV(PD5);
-  if (UECFG1X & _BV(ALLOC)) DDRD |= _BV(PD5);
-  UENUM = 1;
-  if (UECONX & _BV(EPEN)) DDRD |= _BV(PD5);
-  if (UECFG1X & _BV(ALLOC)) DDRD |= _BV(PD5);
-  @#
   UENUM = 0;
   UECONX |= _BV(EPEN);
   UECFG0X = 0;
