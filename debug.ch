@@ -17,7 +17,9 @@ UCSR1B |= _BV(RXEN1) | _BV(TXEN1);
   UDINT &= ~_BV(EORSTI);
 @y
   UDINT &= ~_BV(EORSTI);
+  tx_char('\n');
   tx_char('!');
+  tx_char(' ');
 @z
 
 @x
@@ -41,7 +43,6 @@ UCSR1B |= _BV(RXEN1) | _BV(TXEN1);
 UEINTX &= ~_BV(RXSTPI);
 @y
 UEINTX &= ~_BV(RXSTPI);
-tx_char('\n');
 tx_char('a');
 tx_char('=');
 hex(wValue);
@@ -56,10 +57,8 @@ tx_char('d');
 hex(wLength);
 if (UDADDR & _BV(ADDEN))
   tx_char(' ');
-else {
+else
   tx_char('-');
-  tx_char('\n');
-}
 @z
 
 @x configuration
