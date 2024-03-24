@@ -32,9 +32,9 @@ void main(void)
     if (UEINTX & _BV(RXSTPI))
       @<Process CONTROL packet@>@;
     UENUM = 1;
-    if (*datap != '\0' && (UEINTX & _BV(TXINI)))
+    if (*datap != '\0' && (UEINTX & _BV(FIFOCON)))
       @<Process IN packet@>@;
-    if (*datap == '\0' && !(PIND & _BV(PD1))) datap = data; /* first condition serves as debounce */
+    if (*datap == '\0' && !(PIND & _BV(PD1))) datap = data;
   }
 }
 
@@ -46,7 +46,6 @@ typedef unsigned short U16;
 U8 pressed = 0;
 
 @ @<Process IN packet@>= {
-  UEINTX &= ~_BV(TXINI);
   pressed = !pressed;
   if (pressed) {
     UEDATX = ascii_to_hid_key_map[*datap-32][0];
@@ -337,7 +336,7 @@ SIZEOF_THIS, @/
 1 | 1 << 7, @/
 0x03, @/
 8, @/
-0x0F
+15
 
 @ @<Configure EP1@>=
 UENUM = 1;
