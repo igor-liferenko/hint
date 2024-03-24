@@ -1,7 +1,7 @@
 @x
 void main(void)
 @y
-U8 txini = 0, nakini = 0;
+U8 txini = 0, fifocon = 0, nakini = 0;
 void main(void)
 @z
 
@@ -12,6 +12,11 @@ void main(void)
     if ((UEINTX & _BV(TXINI)) && !txini) {
       txini = 1;
       tx_char('t');
+      tx_char(' ');
+    }
+    if ((UEINTX & _BV(FIFOCON)) && !fifocon) {
+      fifocon = 1;
+      tx_char('f');
       tx_char(' ');
     }
     if ((UEINTX & _BV(NAKINI)) && !nakini) {
