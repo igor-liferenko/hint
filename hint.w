@@ -117,6 +117,8 @@ while (1) {
   UECONX |= _BV(EPEN);
   UECFG0X = 0;
   UECFG1X = _BV(EPSIZE0) | _BV(EPSIZE1) | _BV(ALLOC); /* 64 bytes */
+  UENUM = 1; if (UEINTX & _BV(NAKINI)) DDRD |= _BV(PD5); /* delete this when you ensure
+    that LED is not turned on in three cases, stated in time/test.ch */
   @#
   UDINT &= ~_BV(EORSTI);
 }
