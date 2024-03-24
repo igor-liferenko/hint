@@ -1,4 +1,4 @@
-stty -F /dev/ttyUSB0 raw 115200; cat /dev/ttyUSB0
+stty -F /dev/ttyUSB0 -icanon 115200; cat /dev/ttyUSB0
 
 @x
 UCSR1B |= _BV(RXEN1);
