@@ -1,32 +1,4 @@
 @x
-void main(void)
-@y
-U8 txini = 0, fifocon = 0, nakini = 0;
-void main(void)
-@z
-
-@x
-    UENUM = 1;
-@y
-    UENUM = 1;
-    if ((UEINTX & _BV(TXINI)) && !txini) {
-      txini = 1;
-      tx_char('t');
-      tx_char(' ');
-    }
-    if ((UEINTX & _BV(FIFOCON)) && !fifocon) {
-      fifocon = 1;
-      tx_char('f');
-      tx_char(' ');
-    }
-    if ((UEINTX & _BV(NAKINI)) && !nakini) {
-      nakini = 1;
-      tx_char('n');
-      tx_char(' ');
-    }
-@z
-
-@x
 UCSR1B |= _BV(RXEN1);
 @y
 UCSR1B |= _BV(RXEN1) | _BV(TXEN1);
