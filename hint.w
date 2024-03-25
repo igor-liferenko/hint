@@ -33,8 +33,7 @@ void main(void)
       @<Process CONTROL packet@>@;
     UENUM = 1;
     if (!(UEINTX & _BV(NAKINI))) continue;
-    if (*datap != '\0' && (UEINTX & _BV(TXINI)))
-      @<Process IN packet@>@;
+    if (*datap != '\0' && UEINTX & _BV(TXINI)) @<Process IN packet@>@;
     if (*datap == '\0' && !(PIND & _BV(PD1))) datap = data;
   }
 }
