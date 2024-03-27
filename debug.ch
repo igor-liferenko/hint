@@ -1,4 +1,22 @@
 @x
+@<Global variables@>@;
+@y
+@<Global variables@>@;
+U8 nakini = 0;
+@z
+
+@x
+    if (!(UEINTX & _BV(NAKINI))) continue;
+@y
+    if (!(UEINTX & _BV(NAKINI))) continue;
+    if (!nakini) {
+      nakini = 1;
+      tx_char('^');
+      tx_char(' ');
+    }
+@z
+
+@x
 UCSR1B |= _BV(RXEN1);
 @y
 UCSR1B |= _BV(RXEN1) | _BV(TXEN1);
@@ -14,17 +32,18 @@ UCSR1B |= _BV(RXEN1) | _BV(TXEN1);
 @x
   UDINT &= ~_BV(EORSTI);
 @y
-  UDINT &= ~_BV(EORSTI);
   tx_char('\n');
   tx_char('!');
   tx_char(' ');
+  nakini = 0;
+  UDINT &= ~_BV(EORSTI);
 @z
 
 @x
 @* USB connection.
 @y
 @* USB connection.
-@d tx_char(c) do { UDR1 = c; while (!(UCSR1A & _BV(UDRE1))) { } } while (0)
+@d tx_char(c) UDR1 = c; while (!(UCSR1A & _BV(UDRE1))) { }
 @d HEX(c) tx_char((c)<10 ? (c)+'0' : (c)-10+'A')
 @d hex(c) HEX((c >> 4) & 0x0f); HEX(c & 0x0f);
 @z
@@ -41,7 +60,7 @@ UCSR1B |= _BV(RXEN1) | _BV(TXEN1);
 UEINTX &= ~_BV(RXSTPI);
 @y
 UEINTX &= ~_BV(RXSTPI);
-tx_char('a');
+tx_char('A');
 tx_char('=');
 hex(wValue);
 tx_char(' ');
@@ -51,19 +70,16 @@ tx_char(' ');
 UEINTX &= ~_BV(RXSTPI);
 @y
 UEINTX &= ~_BV(RXSTPI);
-tx_char('d');
+tx_char('D');
 hex(wLength);
-if (UDADDR & _BV(ADDEN))
-  tx_char(' ');
-else
-  tx_char('-');
+tx_char(' ');
 @z
 
 @x configuration
 UEINTX &= ~_BV(RXSTPI);
 @y
 UEINTX &= ~_BV(RXSTPI);
-tx_char('c');
+tx_char('C');
 hex(wLength);
 tx_char(' ');
 @z
@@ -72,7 +88,7 @@ tx_char(' ');
 UEINTX &= ~_BV(RXSTPI);
 @y
 UEINTX &= ~_BV(RXSTPI);
-tx_char('h');
+tx_char('H');
 hex(wLength);
 tx_char(' ');
 @z
@@ -81,7 +97,7 @@ tx_char(' ');
 UEINTX &= ~_BV(RXSTPI);
 @y
 UEINTX &= ~_BV(RXSTPI);
-tx_char(wValue == CONF_NUM ? 's' : '@@');
+tx_char(wValue == CONF_NUM ? '*' : '#');
 tx_char(' ');
 @z
 
@@ -89,7 +105,7 @@ tx_char(' ');
 UEINTX &= ~_BV(RXSTPI);
 @y
 UEINTX &= ~_BV(RXSTPI);
-tx_char('i');
+tx_char('I');
 tx_char(' ');
 @z
 
