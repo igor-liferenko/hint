@@ -16,7 +16,7 @@ mkdir -p files/etc/
 cat <<'EOF' >files/etc/rc.local
 mount /dev/sda1 /mnt
 cat <<'FOE' | sh &
-sleep 60 # adjust empirically that all output to ttyATH0 stops (115200)
+sleep 60 # adjust empirically that all output stops (115200)
 if [ -s /mnt/data.txt ]; then
   printf +++ >/dev/ttyATH0
   head -c 50 /mnt/data.txt | head -n 1 | tr -dc ' -~' >/dev/ttyATH0 # if you change here, change DATA_SIZE in hint.w
