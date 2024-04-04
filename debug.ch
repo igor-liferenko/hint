@@ -1,22 +1,4 @@
 @x
-@<Global variables@>@;
-@y
-@<Global variables@>@;
-U8 nakini = 0;
-@z
-
-@x
-    if (!(UEINTX & _BV(NAKINI))) continue;
-@y
-    if (!(UEINTX & _BV(NAKINI))) continue;
-    if (!nakini) {
-      nakini = 1;
-      tx_char('^');
-      tx_char(' ');
-    }
-@z
-
-@x
 UCSR1B |= _BV(RXEN1);
 @y
 UCSR1B |= _BV(RXEN1) | _BV(TXEN1);
@@ -35,7 +17,6 @@ UCSR1B |= _BV(RXEN1) | _BV(TXEN1);
   tx_char('\n');
   tx_char('!');
   tx_char(' ');
-  nakini = 0;
   UDINT &= ~_BV(EORSTI);
 @z
 
