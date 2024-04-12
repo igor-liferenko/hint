@@ -56,7 +56,6 @@ U8 pressed = 0;
     UEDATX = 0;
     UEDATX = 0;
     UEDATX = 0;
-    UEINTX &= ~_BV(FIFOCON);
   }
   else {
     datap++;
@@ -68,8 +67,8 @@ U8 pressed = 0;
     UEDATX = 0;
     UEDATX = 0;
     UEDATX = 0;
-    UEINTX &= ~_BV(FIFOCON);
   }
+  UEINTX &= ~_BV(FIFOCON);
 }
 
 @ @<Global...@>=
