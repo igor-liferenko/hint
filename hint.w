@@ -17,6 +17,8 @@
 @<Functions@>@;
 @<Create ISR...@>@;
 
+U16 millis = 0;
+
 void main(void)
 {
   DDRB |= _BV(PB0); /* set OUTPUT mode (LED is turned on automatically) */
