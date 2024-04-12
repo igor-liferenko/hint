@@ -17,8 +17,6 @@
 @<Functions@>@;
 @<Create ISR...@>@;
 
-U16 millis = 0;
-
 void main(void)
 {
   DDRB |= _BV(PB0); /* set OUTPUT mode (LED is turned on automatically) */
@@ -33,13 +31,6 @@ void main(void)
     UENUM = 0;
     if (UEINTX & _BV(RXSTPI))
       @<Process CONTROL packet@>@;
-    if (millis < 5000) {
-       if (UDINT & _BV(SOFI)) {
-       UDINT &= ~_BV(SOFI);
-        millis++;
-      }
-      continue;
-    }
     UENUM = 1;
     if (*datap != '\0' && UEINTX & _BV(TXINI)) @<Process IN packet@>@;
     if (*datap == '\0' && !(PIND & _BV(PD1))) datap = data;
