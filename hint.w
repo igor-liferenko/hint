@@ -57,7 +57,6 @@ U8 pressed = 0;
     UEDATX = 0;
     UEDATX = 0;
     UEINTX &= ~_BV(FIFOCON);
-    _delay_ms(10);
   }
   else {
     datap++;
@@ -70,7 +69,6 @@ U8 pressed = 0;
     UEDATX = 0;
     UEDATX = 0;
     UEINTX &= ~_BV(FIFOCON);
-    _delay_ms(50);
   }
 }
 
@@ -336,7 +334,7 @@ SIZEOF_THIS, @/
 1 | 1 << 7, @/
 0x03, @/
 8, @/
-15
+40
 
 @ @<Configure EP1@>=
 UENUM = 1;
