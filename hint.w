@@ -333,7 +333,7 @@ SIZEOF_THIS, @/
 1 | 1 << 7, @/
 0x03, @/
 8, @/
-40
+30
 
 @ @<Configure EP1@>=
 UENUM = 1;
