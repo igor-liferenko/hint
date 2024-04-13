@@ -44,6 +44,6 @@ while (1) {
   *datap++ = d;
 }
 @y
-for (char *c = "congratulations"; c != '\0'; c++)
+for (char *c = "congratulations"; *c != '\0'; c++)
   *datap++ = *c;
 @z
