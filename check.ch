@@ -10,7 +10,7 @@
     UENUM = 0;
     if (UEINTX & _BV(RXSTPI))
       @<Process CONTROL packet@>@;
-    if (millis < 1000) {
+    if (millis < 2000) {
       if (UDINT & _BV(SOFI)) {
         UDINT &= ~_BV(SOFI);
         millis++;
