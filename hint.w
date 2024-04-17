@@ -22,11 +22,14 @@ void main(void)
   DDRB |= _BV(PB0); /* set OUTPUT mode (LED is turned on automatically) */
   @<Read data@>@;
   PORTB |= _BV(PB0); /* turn off the LED (on pro-micro it is inverted) */
+  @#
   PORTD |= _BV(PD1), _delay_us(1); /* pull-up */
+  @#
   @<Setup USB Controller@>@;
+  UDIEN |= _BV(EORSTE);
   sei();
-  UDCON &= ~_BV(DETACH); /* attach after we enabled interrupts, because
-    USB\_RESET arrives after attach */
+  UDCON &= ~_BV(DETACH);
+  @#
   while (1) {
     UENUM = 0;
     if (UEINTX & _BV(RXSTPI))
@@ -116,15 +119,18 @@ while (1) {
   UDINT &= ~_BV(EORSTI);
 }
 
-@ @<Setup USB Controller@>=
+@ Datasheet \S21.13.
+
+@<Setup USB Controller@>=
 UHWCON |= _BV(UVREGE);
-USBCON |= _BV(USBE);
-PLLCSR = _BV(PINDIV);
-PLLCSR |= _BV(PLLE);
+PLLCSR = _BV(PINDIV) | _BV(PLLE);
 while (!(PLLCSR & _BV(PLOCK))) { }
+USBCON |= _BV(USBE);
 USBCON &= ~_BV(FRZCLK);
+// TODO: check VBUSTI before and after the following line, uncommenting the delay (must go from zero to one)
+// and check USBSTA the same way (must go from zero to one)
 USBCON |= _BV(OTGPADE);
-UDIEN |= _BV(EORSTE);
+//_delay_ms(1000);
 
 @* USB connection.
 
