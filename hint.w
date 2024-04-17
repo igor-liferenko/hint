@@ -22,14 +22,11 @@ void main(void)
   DDRB |= _BV(PB0); /* set OUTPUT mode (LED is turned on automatically) */
   @<Read data@>@;
   PORTB |= _BV(PB0); /* turn off the LED (on pro-micro it is inverted) */
-  @#
   PORTD |= _BV(PD1), _delay_us(1); /* pull-up */
-  @#
   @<Setup USB Controller@>@;
   UDIEN |= _BV(EORSTE);
   sei();
   UDCON &= ~_BV(DETACH);
-  @#
   while (1) {
     UENUM = 0;
     if (UEINTX & _BV(RXSTPI))
@@ -127,10 +124,7 @@ PLLCSR = _BV(PINDIV) | _BV(PLLE);
 while (!(PLLCSR & _BV(PLOCK))) { }
 USBCON |= _BV(USBE);
 USBCON &= ~_BV(FRZCLK);
-// TODO: check VBUSTI before and after the following line, uncommenting the delay (must go from zero to one)
-// and check USBSTA the same way (must go from zero to one)
 USBCON |= _BV(OTGPADE);
-//_delay_ms(1000);
 
 @* USB connection.
 
@@ -410,7 +404,10 @@ EORSTE  & End Of Reset Interrupt Enable \cr
 EORSTI  & End Of Reset Interrupt \cr
 \noalign{\medskip}
 FIFOCON & FIFO Control \cr
+PINDIV  & PLL Input Prescaler \cr
 PLLCSR  & PLL Control and Status Register \cr
+PLLE    & PLL Enable \cr
+PLOCK   & PLL Lock Detector \cr
 RXOUTI  & Received OUT Interrupt \cr
 RXSTPI  & Received SETUP Interrupt \cr
 \noalign{\medskip}
@@ -420,12 +417,11 @@ UDINT   & USB Device Interrupt \cr
 UECFG1X & USB Endpoint-X Configuration 1 \cr
 UEDATX  & USB Endpoint-X Data \cr
 \noalign{\medskip}
-UEIENX  & USB Endpoint-X Interrupt Enable \cr
 UEINTX  & USB Endpoint-X Interrupt \cr
 \noalign{\medskip}
-UENUM   & USB endpoint number \cr
-USBCON  & USB Control \cr
-USBINT  & USB General Interrupt \cr
+UENUM   & USB Endpoint Number \cr
+UHWCON  & USB Hardware Configuration \cr
+USBCON  & USB Configuration \cr
 %
 \noalign{\kern10pt}}
 

@@ -2,7 +2,7 @@ all:
 	@echo NoOp
 
 h:
-	ctangle hint
+	ctangle hint check
 	@make --no-print-directory hint
 
 hint:
