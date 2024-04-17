@@ -397,34 +397,6 @@ U8 bInterval;
 
 @* Headers.
 
-\halign{\.{#}\hfil&#\hfil\cr
-\noalign{\kern10pt}
-%
-EORSTE  & End Of Reset Interrupt Enable \cr
-EORSTI  & End Of Reset Interrupt \cr
-\noalign{\medskip}
-FIFOCON & FIFO Control \cr
-PINDIV  & PLL Input Prescaler \cr
-PLLCSR  & PLL Control and Status Register \cr
-PLLE    & PLL Enable \cr
-PLOCK   & PLL Lock Detector \cr
-RXOUTI  & Received OUT Interrupt \cr
-RXSTPI  & Received SETUP Interrupt \cr
-\noalign{\medskip}
-UDIEN   & USB Device Interrupt Enable \cr
-UDINT   & USB Device Interrupt \cr
-\noalign{\medskip}
-UECFG1X & USB Endpoint-X Configuration 1 \cr
-UEDATX  & USB Endpoint-X Data \cr
-\noalign{\medskip}
-UEINTX  & USB Endpoint-X Interrupt \cr
-\noalign{\medskip}
-UENUM   & USB Endpoint Number \cr
-UHWCON  & USB Hardware Configuration \cr
-USBCON  & USB Configuration \cr
-%
-\noalign{\kern10pt}}
-
 @<Header files@>=
 #include <avr/boot.h>
 #include <avr/interrupt.h>
