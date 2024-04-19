@@ -163,8 +163,8 @@ case 0x0680: @/
   case 0x0200 | CONF_NUM - 1: @/
     @<Handle {\caps get descriptor configuration}@>@;
     break;
-  default: @/
-    UECONX |= _BV(STALLRQ);
+  case 0x0600: /* full-speed or high-speed ? */
+    UECONX |= _BV(STALLRQ); /* full-speed */
     UEINTX &= ~_BV(RXSTPI);
   }
   break;
