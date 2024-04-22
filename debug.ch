@@ -5,9 +5,9 @@ UCSR1B |= _BV(RXEN1) | _BV(TXEN1);
 @z
 
 @x
-  UECFG1X = _BV(EPSIZE0) | _BV(EPSIZE1) | _BV(ALLOC); /* 64 bytes */
+  UECFG1X |= _BV(EPSIZE0) | _BV(EPSIZE1) | _BV(ALLOC); /* 64 bytes */
 @y
-  UECFG1X = _BV(EPSIZE0) | _BV(EPSIZE1) | _BV(ALLOC); /* 64 bytes */
+  UECFG1X |= _BV(EPSIZE0) | _BV(EPSIZE1) | _BV(ALLOC); /* 64 bytes */
   if (!(UESTA0X & _BV(CFGOK))) DDRD |= _BV(PD5);
 @z
 
@@ -91,8 +91,8 @@ tx_char(' ');
 @z
 
 @x
-UECFG1X = _BV(ALLOC);
+UECFG1X |= _BV(ALLOC);
 @y
-UECFG1X = _BV(ALLOC);
+UECFG1X |= _BV(ALLOC);
 if (!(UESTA0X & _BV(CFGOK))) DDRD |= _BV(PD5);
 @z
