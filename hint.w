@@ -126,7 +126,8 @@ PLLCSR |= _BV(PLLE);
 while (!(PLLCSR & _BV(PLOCK))) { }
 USBCON |= _BV(USBE);
 USBCON &= ~_BV(FRZCLK);
-USBCON |= _BV(OTGPADE);
+USBCON |= _BV(OTGPADE); /* VBUS (Figure 21-3 in datasheet; \.{VBUS} bit in \.{USBSTA} register and
+                           \.{VBUSTI} bit in \.{USBINT} register are not applicable in this case) */
 
 @* USB connection.
 
